@@ -204,20 +204,22 @@ final class QueueConsumer implements QueueConsumerInterface
             $extension->onResult($messageResult);
             $result = $messageResult->getResult();
 
-            switch ($result) {
-                case Result::ACK:
-                    $consumer->acknowledge($message);
-                    break;
-                case Result::REJECT:
-                    $consumer->reject($message, false);
-                    break;
-                case Result::REQUEUE:
-                    $consumer->reject($message, true);
-                    break;
-                case Result::ALREADY_ACKNOWLEDGED:
-                    break;
-                default:
-                    throw new \LogicException(sprintf('Status is not supported: %s', $result));
+            if (!$messageReceived->getAckOnMessageRecieve()) {
+                switch ($result) {
+                    case Result::ACK:
+                        $consumer->acknowledge($message);
+                        break;
+                    case Result::REJECT:
+                        $consumer->reject($message, false);
+                        break;
+                    case Result::REQUEUE:
+                        $consumer->reject($message, true);
+                        break;
+                    case Result::ALREADY_ACKNOWLEDGED:
+                        break;
+                    default:
+                        throw new \LogicException(sprintf('Status is not supported: %s', $result));
+                }
             }
 
             $postMessageReceived = new PostMessageReceived($this->interopContext, $consumer, $message, $result, $receivedAt, $this->logger);
