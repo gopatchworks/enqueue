@@ -2,6 +2,7 @@
 
 namespace Enqueue\Consumption;
 
+use Illuminate\Support\Facades\Config;
 use Enqueue\Consumption\Context\End;
 use Enqueue\Consumption\Context\InitLogger;
 use Enqueue\Consumption\Context\MessageReceived;
@@ -204,7 +205,9 @@ final class QueueConsumer implements QueueConsumerInterface
             $extension->onResult($messageResult);
             $result = $messageResult->getResult();
 
-            if (!$messageReceived->getAckOnMessageRecieve()) {
+            if (!Config::has('queue.connections.interop.acknowledge_on_receive')
+                || Config::get('queue.connections.interop.acknowledge_on_receive') === false) {
+
                 switch ($result) {
                     case Result::ACK:
                         $consumer->acknowledge($message);

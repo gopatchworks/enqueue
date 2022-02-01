@@ -46,9 +46,6 @@ final class MessageReceived
      */
     private $result;
 
-    /** @var bool  */
-    protected $ackOnMsgRecieve = true;
-
     public function __construct(
         Context $context,
         Consumer $consumer,
@@ -108,15 +105,5 @@ final class MessageReceived
     public function setResult(Result $result): void
     {
         $this->result = $result;
-    }
-
-    public function getAckOnMessageRecieve(): bool
-    {
-        return $this->ackOnMsgRecieve;
-    }
-    
-    public function setAckOnMessageRecieve(bool $value)
-    {
-        $this->ackOnMsgRecieve = $value;
     }
 }
